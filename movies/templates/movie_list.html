@@ -13,7 +13,11 @@
 
   <form method="get" class="mb-4 p-3" style="background: rgba(255,255,255,0.05); border-radius: 8px; border: 1px solid rgba(229,9,20,0.2);">
     <div class="row g-3 align-items-end">
-      <div class="col-md-8">
+      <div class="col-md-5">
+        <label class="form-label">Pesquisar por nome</label>
+        <input type="text" name="name" class="form-control" placeholder="Digite o nome do filme..." value="{{ request.GET.name }}" />
+      </div>
+      <div class="col-md-5">
         <label class="form-label">Filtrar por categoria</label>
         <select name="category" class="form-select">
           <option value="">Todas as categorias</option>
@@ -22,7 +26,7 @@
           {% endfor %}
         </select>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-2">
         <button class="btn btn-primary btn-icon w-100"><i data-lucide="search"></i> Filtrar</button>
       </div>
     </div>

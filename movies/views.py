@@ -61,8 +61,11 @@ class MovieListView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         category_id = self.request.GET.get('category')
+        movie_name = self.request.GET.get('name')
         if category_id:
             queryset = queryset.filter(category_id=category_id)
+        if movie_name:
+            queryset = queryset.filter(name__icontains=movie_name)
         return queryset.select_related('category').prefetch_related('audiomovie_set')
 
     def get_context_data(self, **kwargs):
