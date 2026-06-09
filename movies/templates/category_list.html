@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Categorias{% endblock %}
+{% block content %}
+  <div class="hero section-header">
+    <div>
+      <h1>🎭 Categorias</h1>
+      <p class="text-secondary">Navegue por nossas categorias</p>
+    </div>
+    {% if user.is_authenticated %}
+      <a class="btn btn-primary btn-icon" href="{% url 'category_create' %}"><i data-lucide="plus"></i> Nova Categoria</a>
+    {% endif %}
+  </div>
+
+  <div class="row g-4">
+    {% for c in categories %}
+      <div class="col-md-6 col-lg-4 col-xl-3">
+        <div class="card" style="background: linear-gradient(135deg, rgba(229,9,20,0.1), rgba(255,107,107,0.05)); border: 1px solid rgba(229,9,20,0.3); border-radius: 8px; overflow: hidden; transition: all 0.3s ease; cursor: pointer;" onmouseenter="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 12px 30px rgba(229,9,20,0.3)'" onmouseleave="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+          <div class="card-body text-center">
+            <i data-lucide="layers" style="font-size: 2rem; color: var(--netflix-red); margin-bottom: 1rem; display: block;"></i>
+            <h5 class="card-title" style="color: var(--netflix-red); margin-bottom: 0.75rem;">
+              <a href="{% url 'movie_list' %}?category={{ c.pk }}" style="color: var(--netflix-red); text-decoration: none;">{{ c.name }}</a>
+            </h5>
+            <p class="small text-secondary mb-3">Clique para ver todos os filmes da categoria</p>
+            <a class="btn btn-sm btn-outline-light btn-icon mb-3" href="{% url 'movie_list' %}?category={{ c.pk }}">
+              <i data-lucide="film"></i> Ver filmes
+            </a>
+            {% if user.is_authenticated %}
+              <div class="d-flex gap-2">
+                <a class="btn btn-sm btn-outline-secondary btn-icon flex-grow-1" href="{% url 'category_update' c.pk %}"><i data-lucide="edit-2"></i> Editar</a>
+                <a class="btn btn-sm btn-outline-danger btn-icon flex-grow-1" href="{% url 'category_delete' c.pk %}"><i data-lucide="trash-2"></i> Excluir</a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <div style="text-align: center; padding: 3rem; background: rgba(255,255,255,0.05); border-radius: 8px; border: 1px dashed rgba(229,9,20,0.2);">
+          <i class="fas fa-inbox" style="font-size: 3rem; color: var(--netflix-red); margin-bottom: 1rem; display: block;"></i>
+          <p class="text-muted">Nenhuma categoria encontrada.</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

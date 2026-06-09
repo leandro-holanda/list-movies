@@ -11,6 +11,7 @@ class Category(models.Model):
 class Movie(models.Model):
     name = models.CharField(max_length=255)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
+    cartaz = models.ImageField(upload_to='cartazes/', null=True, blank=True)
 
     def __str__(self):
         return self.name    

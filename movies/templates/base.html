@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}List Movies{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/lucide.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --netflix-black: #0f0f0f;
+        --netflix-dark: #1a1a1a;
+        --netflix-darker: #141414;
+        --netflix-red: #e50914;
+        --netflix-hover: #f40612;
+        --text-primary: #ffffff;
+        --text-secondary: #b3b3b3;
+      }
+
+      body {
+        background: linear-gradient(135deg, var(--netflix-black) 0%, var(--netflix-darker) 100%);
+        color: var(--text-primary);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+      }
+
+      /* Navbar */
+      nav {
+        background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0)) !important;
+        border-bottom: 1px solid rgba(229, 9, 20, 0.3);
+        padding: 1.5rem 0 !important;
+        backdrop-filter: blur(10px);
+      }
+
+      .navbar-brand {
+        font-size: 2rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--netflix-red), var(--netflix-hover));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      .nav-link {
+        color: var(--text-secondary) !important;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .nav-link:hover {
+        color: var(--netflix-red) !important;
+      }
+
+      .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--netflix-red);
+        transition: width 0.3s ease;
+      }
+
+      .nav-link:hover::after {
+        width: 100%;
+      }
+
+      .container {
+        padding: 2rem 1rem;
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        margin-bottom: 1.5rem;
+      }
+
+      h1 {
+        font-size: 3rem;
+        background: linear-gradient(135deg, var(--netflix-red), #ff6b6b);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* Alerts */
+      .alert {
+        border: none;
+        border-left: 4px solid var(--netflix-red);
+        background: rgba(229, 9, 20, 0.1);
+        color: var(--text-primary);
+        border-radius: 8px;
+      }
+
+      /* Buttons */
+      .btn {
+        border: none;
+        font-weight: 600;
+        padding: 0.7rem 1.5rem;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--netflix-red), var(--netflix-hover));
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(135deg, var(--netflix-hover), var(--netflix-red));
+        transform: scale(1.05);
+        box-shadow: 0 8px 24px rgba(229, 9, 20, 0.4);
+      }
+
+      .btn-secondary {
+        background: rgba(255,255,255,0.1);
+        color: var(--text-primary);
+        border: 1px solid rgba(255,255,255,0.2);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255,255,255,0.2);
+        border-color: rgba(255,255,255,0.3);
+      }
+
+      .btn-outline-secondary {
+        color: var(--text-secondary);
+        border: 1px solid var(--text-secondary);
+      }
+
+      .btn-outline-secondary:hover {
+        background: var(--netflix-red);
+        border-color: var(--netflix-red);
+        color: white;
+      }
+
+      .btn-outline-danger {
+        color: #ff6b6b;
+        border: 1px solid #ff6b6b;
+      }
+
+      .btn-outline-danger:hover {
+        background: #ff6b6b;
+        border-color: #ff6b6b;
+        color: white;
+      }
+
+      .btn-icon {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .btn-icon svg {
+        width: 1rem;
+        height: 1rem;
+      }
+
+      .badge-soft {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.45rem 0.75rem;
+        border-radius: 999px;
+        background: rgba(229, 9, 20, 0.15);
+        color: white;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+      }
+
+      .card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(229, 9, 20, 0.4);
+        box-shadow: 0 24px 48px rgba(0, 0, 0, 0.28);
+      }
+
+      .card-body {
+        padding: 1.5rem;
+      }
+
+      .card-title a {
+        text-decoration: none;
+      }
+
+      .card-title a:hover {
+        color: var(--netflix-hover);
+      }
+
+      .movie-poster {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+      }
+
+      .hero {
+        margin-bottom: 3rem;
+        padding: 2.5rem 2rem;
+        background: linear-gradient(135deg, rgba(229, 9, 20, 0.16), rgba(255, 107, 107, 0.06));
+        border-radius: 14px;
+        border: 1px solid rgba(229, 9, 20, 0.25);
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+      }
+
+      .section-header h1, .section-header h2 {
+        margin-bottom: 0;
+      }
+
+      /* List Groups */
+      .list-group {
+        background: transparent;
+      }
+
+      .list-group-item {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(229, 9, 20, 0.2);
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        padding: 1.5rem;
+      }
+
+      .list-group-item:hover {
+        background: rgba(229, 9, 20, 0.1);
+        border-color: var(--netflix-red);
+        transform: translateX(5px);
+      }
+
+      .list-group-item a {
+        color: var(--netflix-red);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .list-group-item a:hover {
+        color: var(--netflix-hover);
+        text-decoration: underline;
+      }
+
+      /* Forms */
+      .form-label {
+        color: var(--text-secondary);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.7rem;
+      }
+
+      .form-control, .form-select {
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.15);
+        color: var(--text-primary);
+        border-radius: 6px;
+        padding: 0.8rem 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus, .form-select:focus {
+        background: rgba(255,255,255,0.12);
+        border-color: var(--netflix-red);
+        box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.2);
+        color: var(--text-primary);
+      }
+
+      .form-control::placeholder {
+        color: var(--text-secondary);
+      }
+
+      .form-control option {
+        background: var(--netflix-darker);
+        color: var(--text-primary);
+      }
+
+      .errorlist {
+        list-style: none;
+        color: #ff6b6b;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+      }
+
+      .errorlist li {
+        margin: 0.3rem 0;
+      }
+
+      /* Audio Player */
+      audio {
+        width: 100%;
+        margin: 2rem 0;
+        border-radius: 6px;
+        background: rgba(255,255,255,0.08);
+      }
+
+      audio::-webkit-media-controls-panel {
+        background: rgba(229, 9, 20, 0.3);
+      }
+
+      /* Hero Section */
+      .hero {
+        margin-bottom: 3rem;
+        padding: 3rem 2rem;
+        background: linear-gradient(135deg, rgba(229, 9, 20, 0.1), rgba(255,107,107,0.05));
+        border-radius: 12px;
+        border: 1px solid rgba(229, 9, 20, 0.3);
+      }
+
+      .text-muted {
+        color: var(--text-secondary) !important;
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 1.8rem;
+        }
+        .container {
+          padding: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">🎬 ListMovies</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link" href="{% url 'category_list' %}"><i data-lucide="layers"></i> Categorias</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'movie_list' %}"><i data-lucide="film"></i> Filmes</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'audio_list' %}"><i data-lucide="mic"></i> Áudios</a></li>
+          </ul>
+          <ul class="navbar-nav">
+            {% if user.is_authenticated %}
+              <li class="nav-item"><span class="nav-link"><i data-lucide="user"></i> {{ user.username }}</span></li>
+              <li class="nav-item">
+                <form method="post" action="{% url 'logout' %}" class="d-inline">
+                  {% csrf_token %}
+                  <button type="submit" class="nav-link btn btn-link p-0 text-decoration-none text-white">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                  </button>
+                </form>
+              </li>
+            {% else %}
+              <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Entrar</a></li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      window.addEventListener('DOMContentLoaded', function() {
+        if (window.lucide) {
+          lucide.replace({ 'stroke-width': 2.2, 'width': 18, 'height': 18 });
+        }
+      });
+    </script>
+  </body>
+</html>

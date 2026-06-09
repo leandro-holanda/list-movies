@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}{{ movie.name }}{% endblock %}
+{% block content %}
+  <div class="hero">
+    <div>
+      <h1>{{ movie.name }}</h1>
+      <p class="text-secondary mb-0">
+        <i data-lucide="tag"></i> Categoria: <span style="color: var(--netflix-red);">{{ movie.category.name }}</span>
+      </p>
+    </div>
+  </div>
+
+  <h3 style="margin: 2rem 0 1.5rem 0;">🎧 Áudios Disponíveis</h3>
+  <div class="row g-4 mb-4">
+    {% for audio in audios %}
+      <div class="col-md-6">
+        <div class="card" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(229,9,20,0.2); border-radius: 8px;">
+          <div class="card-body">
+            <h5 class="card-title" style="color: var(--netflix-red);">
+              <a href="{% url 'audio_detail' audio.pk %}" style="color: var(--netflix-red); text-decoration: none;">{{ audio.name_audio }}</a>
+            </h5>
+            <p class="small text-muted">
+              <i data-lucide="calendar"></i> {{ audio.data_upload|date:'d/m/Y H:i' }}
+            </p>
+            <audio controls>
+              <source src="{{ audio.audio.url }}" type="audio/mpeg">
+              Seu navegador não suporta o elemento de áudio.
+            </audio>
+            {% if user.is_authenticated %}
+              <div class="mt-3 d-flex gap-2">
+                <a class="btn btn-sm btn-outline-secondary btn-icon flex-grow-1" href="{% url 'audio_update' audio.pk %}"><i data-lucide="edit-2"></i> Editar</a>
+                <a class="btn btn-sm btn-outline-danger btn-icon flex-grow-1" href="{% url 'audio_delete' audio.pk %}"><i data-lucide="trash-2"></i> Excluir</a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <div style="text-align: center; padding: 2rem; background: rgba(255,255,255,0.05); border-radius: 8px; border: 1px dashed rgba(229,9,20,0.2);">
+          <i data-lucide="volume-x" style="font-size: 2rem; color: var(--netflix-red); margin-bottom: 1rem; display: block;"></i>
+          <p class="text-muted">Nenhum áudio encontrado para este filme.</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if user.is_authenticated %}
+    <a class="btn btn-primary btn-icon" href="{% url 'audio_create' %}?movie={{ movie.pk }}"><i data-lucide="plus"></i> Enviar Áudio</a>
+  {% endif %}
+{% endblock %}

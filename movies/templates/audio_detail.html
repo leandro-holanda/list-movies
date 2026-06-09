@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}{{ audio.name_audio }}{% endblock %}
+{% block content %}
+  <div class="hero">
+    <h1>{{ audio.name_audio }}</h1>
+    <p class="text-secondary mb-0">
+      <i data-lucide="film"></i> Filme: <a href="{% url 'movie_detail' audio.movie.pk %}" style="color: var(--netflix-red); text-decoration: none;">{{ audio.movie.name }}</a>
+    </p>
+  </div>
+
+  <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(229,9,20,0.2); border-radius: 8px; padding: 2rem; margin-bottom: 2rem;">
+    <p class="small text-muted mb-3">
+      <i data-lucide="calendar"></i> Enviado em <strong>{{ audio.data_upload|date:'d/m/Y às H:i' }}</strong>
+    </p>
+
+    <audio controls style="width: 100%; margin: 1.5rem 0;">
+      <source src="{{ audio.audio.url }}">
+      Seu navegador não suporta o elemento de áudio.
+    </audio>
+
+    <div class="d-flex gap-2 mt-3">
+      <a class="btn btn-primary btn-icon flex-grow-1" href="{{ audio.audio.url }}" download>
+        <i data-lucide="download"></i> Download
+      </a>
+      {% if user.is_authenticated %}
+        <a class="btn btn-outline-secondary btn-icon flex-grow-1" href="{% url 'audio_update' audio.pk %}">
+          <i data-lucide="edit-2"></i> Editar
+        </a>
+        <a class="btn btn-outline-danger btn-icon flex-grow-1" href="{% url 'audio_delete' audio.pk %}">
+          <i data-lucide="trash-2"></i> Excluir
+        </a>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

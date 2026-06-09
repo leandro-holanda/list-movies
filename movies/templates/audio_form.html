@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Formulário de Áudio{% endblock %}
+{% block content %}
+  <div class="hero">
+    <h1>{% if form.instance.pk %}Editar Áudio{% else %}Enviar Áudio{% endif %}</h1>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(229,9,20,0.2); border-radius: 8px; padding: 2rem;">
+        <form method="post" enctype="multipart/form-data" novalidate>
+          {% csrf_token %}
+
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger mb-3">
+              {{ form.non_field_errors }}
+            </div>
+          {% endif %}
+
+          <div class="mb-3">
+            {{ form.movie.label_tag }}
+            {{ form.movie }}
+            {% if form.movie.errors %}
+              <div class="errorlist">
+                {{ form.movie.errors }}
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="mb-3">
+            {{ form.name_audio.label_tag }}
+            {{ form.name_audio }}
+            {% if form.name_audio.errors %}
+              <div class="errorlist">
+                {{ form.name_audio.errors }}
+              </div>
+            {% endif %}
+            <small class="text-muted d-block mt-1">Máximo 255 caracteres</small>
+          </div>
+
+          <div class="mb-3">
+            {{ form.audio.label_tag }}
+            {{ form.audio }}
+            {% if form.audio.errors %}
+              <div class="errorlist">
+                {{ form.audio.errors }}
+              </div>
+            {% endif %}
+            <small class="text-muted d-block mt-1">Selecione um arquivo de áudio</small>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary btn-icon flex-grow-1" type="submit">
+              <i data-lucide="save"></i> Salvar
+            </button>
+            <a class="btn btn-secondary btn-icon flex-grow-1" href="{% url 'audio_list' %}">
+              <i data-lucide="x"></i> Cancelar
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

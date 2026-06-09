@@ -15,13 +15,21 @@ class CategoryListView(ListView):
     model = Category
     template_name = 'category_list.html'
     context_object_name = 'categories'
-    ordering = ['nome']
+    ordering = ['name']
+
+    def get_queryset(self):
+        return super().get_queryset().prefetch_related('movie_set')
 
 
 class CategoryDetailView(LoginRequiredMixin, DetailView):
     model = Category
     template_name = 'category_detail.html'
     context_object_name = 'category'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['audios'] = AudioMovie.objects.filter(movie__category=self.object).select_related('movie')
+        return context
 
 
 class CategoryCreateView(LoginRequiredMixin, CreateView):
@@ -49,13 +57,18 @@ class MovieListView(ListView):
     template_name = 'movie_list.html'
     context_object_name = 'movies'
     ordering = ['name']
-    
+
     def get_queryset(self):
         queryset = super().get_queryset()
         category_id = self.request.GET.get('category')
         if category_id:
             queryset = queryset.filter(category_id=category_id)
-        return queryset.select_related('category')
+        return queryset.select_related('category').prefetch_related('audiomovie_set')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all().order_by('name')
+        return context
 
 
 class MovieDetailView(DetailView):
@@ -98,9 +111,18 @@ class AudioMovieListView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         movie_id = self.request.GET.get('movie')
+        category_id = self.request.GET.get('category')
         if movie_id:
             queryset = queryset.filter(movie_id=movie_id)
+        if category_id:
+            queryset = queryset.filter(movie__category_id=category_id)
         return queryset.select_related('movie__category')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        context['selected_category'] = self.request.GET.get('category', '')
+        return context
 
 
 class AudioMovieDetailView(DetailView):
@@ -114,6 +136,13 @@ class AudioMovieCreateView(LoginRequiredMixin, CreateView):
     form_class = AudioMovieForm
     template_name = 'audio_form.html'
     success_url = reverse_lazy('audio_list')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        movie_id = self.request.GET.get('movie')
+        if movie_id:
+            initial['movie'] = movie_id
+        return initial
 
 
 class AudioMovieUpdateView(LoginRequiredMixin, UpdateView):

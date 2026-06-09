@@ -3,18 +3,24 @@ from .models import Category, Movie, AudioMovie
 
 
 class CategoryForm(forms.ModelForm):
+
     class Meta:
         model = Category
-        fields = ['nome']
+        fields = ['name']
 
 
 class MovieForm(forms.ModelForm):
+
     class Meta:
         model = Movie
-        fields = ['name', 'category']
+        fields = ['name', 'category', 'cartaz']
+        widgets = {
+            'cartaz': forms.FileInput(attrs={'accept': 'image/*'})
+        }
 
 
 class AudioMovieForm(forms.ModelForm):
+    
     class Meta:
         model = AudioMovie
         fields = ['movie', 'name_audio', 'audio']

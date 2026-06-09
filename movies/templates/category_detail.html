@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}{{ category.name }}{% endblock %}
+{% block content %}
+<div class="hero section-header">
+        <div>
+          <h1>{{ category.name }}</h1>
+          <p class="text-secondary">Filmes e áudios nesta categoria</p>
+        </div>
+        <a class="btn btn-outline-light btn-icon" href="{% url 'audio_list' %}?category={{ category.pk }}">
+          <i data-lucide="music"></i> Ver apenas áudios
+        </a>
+  </div>
+
+  <div class="row g-4">
+    {% for movie in category.movie_set.all %}
+      <div class="col-md-6 col-lg-4 col-xl-3">
+        <div class="card" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(229,9,20,0.2); border-radius: 8px; overflow: hidden; transition: all 0.3s ease;" onmouseenter="this.style.transform='scale(1.05)'; this.style.borderColor='var(--netflix-red)'" onmouseleave="this.style.transform='scale(1)'; this.style.borderColor='rgba(229,9,20,0.2)'">
+          <div class="card-body">
+            <h5 class="card-title" style="color: var(--netflix-red);">
+              <a href="{% url 'movie_detail' movie.pk %}" style="color: var(--netflix-red); text-decoration: none;">{{ movie.name }}</a>
+            </h5>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <div style="text-align: center; padding: 3rem; background: rgba(255,255,255,0.05); border-radius: 8px; border: 1px dashed rgba(229,9,20,0.2);">
+          <i data-lucide="film" style="font-size: 3rem; color: var(--netflix-red); margin-bottom: 1rem; display: block;"></i>
+          <p class="text-muted">Nenhum filme nesta categoria.</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="hero mt-5">
+    <h2>Áudios vinculados</h2>
+    <p class="text-secondary">Todas as músicas dos filmes desta categoria.</p>
+  </div>
+
+  <div class="row g-4">
+    {% for audio in audios %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(229,9,20,0.2); border-radius: 8px; overflow: hidden;">
+          <div class="card-body">
+            <h5 class="card-title" style="color: var(--netflix-red);">{{ audio.name_audio }}</h5>
+            <p class="small text-muted mb-2"><i data-lucide="film"></i> {{ audio.movie.name }}</p>
+            <audio controls style="width: 100%; margin-bottom: 1rem;">
+              <source src="{{ audio.audio.url }}" type="audio/mpeg">
+              Seu navegador não suporta o elemento de áudio.
+            </audio>
+            <a class="btn btn-sm btn-outline-light btn-icon" href="{% url 'audio_detail' audio.pk %}"><i data-lucide="info"></i> Detalhes</a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <div style="text-align: center; padding: 3rem; background: rgba(255,255,255,0.05); border-radius: 8px; border: 1px dashed rgba(229,9,20,0.2);">
+          <i data-lucide="volume-x" style="font-size: 3rem; color: var(--netflix-red); margin-bottom: 1rem; display: block;"></i>
+          <p class="text-muted">Nenhum áudio encontrado para esta categoria.</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}
